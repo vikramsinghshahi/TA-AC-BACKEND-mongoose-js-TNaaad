@@ -8,3 +8,7 @@ var articleSchema = new Schema({
   createdAt: { type: Date, default: new Date() },
   likes: { type: Number, default: 0 },
 });
+
+var Article = mongoose.model('Article', articleSchema);
+
+module.exports = Article;
