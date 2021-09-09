@@ -1,8 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
 
-var Product = require('./models/product');
-
 var User = require('./models/user');
 
 mongoose.connect('mongodb://localhost/sample', (err) => {
@@ -15,17 +13,6 @@ var app = express();
 
 app.use(express.json());
 
-app.post('/products', (req, res, next) => {
-  console.log(req.body);
-  //capture the data
-  Product.create(req.body, (err, product) => {
-    console.log(err);
-    res.json(product);
-  });
-  //save the data to database
-  //send response
-});
-
 app.post('/users', (req, res) => {
   console.log(req.body);
 
@@ -35,21 +22,37 @@ app.post('/users', (req, res) => {
   });
 });
 
-app.get('/products', (req, res) => {
-  Product.find({}, (err, products) => {
+// app.get('/users/:id', (req, res) => {
+//   var id = req.params.id;
+//   User.findById(id, (err, user) => {
+//     console.log(err);
+//     res.json(user);
+//   });
+// });
+
+app.get('/users/:id', (req, res) => {
+  var id = req.params.id;
+  User.findOne({ _id: id }, (err, user) => {
     console.log(err);
-    res.json({ products: products });
+    res.json(user);
   });
 });
 
-app.get('/products/:id', (req, res) => {
+app.put('/users/:id', (req, res) => {
   var id = req.params.id;
-  console.log(id);
 
-  Product.findById(id, (err, product) => {
+  User.findByIdAndUpdate(id, req.body, { new: true }, (err, updatedUser) => {
     console.log(err);
+    res.json(updatedUser);
+  });
+});
 
-    res.json(product);
+app.delete('/users/:id', (req, res) => {
+  var id = req.params.id;
+
+  User.findByIdAndDelete(id, (err, user) => {
+    if (err) console.log(err);
+    res.send('user deleted');
   });
 });
 
